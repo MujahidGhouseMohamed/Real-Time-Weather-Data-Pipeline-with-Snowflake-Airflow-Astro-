@@ -1,0 +1,37 @@
+CREATE OR REPLACE PROCEDURE WEATHER_DB.STAGE.LOAD_WEATHER_STAGE()
+RETURNS VARCHAR
+LANGUAGE JAVASCRIPT
+EXECUTE AS OWNER
+AS '
+try {
+    var sql_command = `
+      CREATE OR REPLACE TABLE STAGE.WEATHER_STAGE AS
+      SELECT
+          INITCAP(TRIM(CITY)) AS LOCATION,
+          ROUND(TEMPERATURE, 1) AS TEMPERATURE,
+          CASE WHEN HUMIDITY BETWEEN 0 AND 100 THEN HUMIDITY ELSE NULL END AS HUMIDITY,
+          UPPER(TRIM(WEATHER)) AS WEATHER,
+          DATE_TRUNC(''HOUR'', TIMESTAMP)::TIMESTAMP AS DATE_RECORDED,
+          CASE WHEN TEMPERATURE > 35 THEN TRUE ELSE FALSE END AS IS_HOT,
+          CASE
+              WHEN UPPER(WEATHER) LIKE ''%RAIN%'' THEN ''RAINY''
+              WHEN UPPER(WEATHER) LIKE ''%CLOUD%'' THEN ''CLOUDY''
+              WHEN UPPER(WEATHER) LIKE ''%SUN%'' THEN ''SUNNY''
+              ELSE ''OTHER''
+          END AS WEATHER_CATEGORY
+      FROM (
+          SELECT *,
+              ROW_NUMBER() OVER (PARTITION BY CITY, TIMESTAMP ORDER BY TIMESTAMP) AS rn
+          FROM RAW.WEATHER_RAW
+          WHERE TEMPERATURE IS NOT NULL
+            AND CITY IS NOT NULL
+            AND TIMESTAMP IS NOT NULL
+      ) cleaned
+      WHERE rn = 1;
+    `;
+    snowflake.execute({sqlText: sql_command});
+    return ''STAGE.WEATHER_STAGE created successfully.'';
+} catch(err) {
+    return ''Error: '' + err.message;
+}
+';
