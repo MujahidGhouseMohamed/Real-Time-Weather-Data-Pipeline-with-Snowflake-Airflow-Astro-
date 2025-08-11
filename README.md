@@ -148,16 +148,3 @@ load_dotenv("/usr/local/airflow/.env", override=True)
 - **OpenWeather API** – Weather data source
 
 ***
-
-Do you want me to also prepare a **diagram.png** in draw.io showing this trigger chain, so your README visually illustrates the pipeline? This would make your GitHub repo look much more professional and clear.
-
-<div style="text-align: center">⁂</div>
-
-[^1]: extract_weather.py
-
-[^2]: weather_etl_dag.py
-
-[^3]: weather_pipeline.py
-
-[^4]: weather_to_final.py
-
