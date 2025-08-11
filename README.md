@@ -146,7 +146,6 @@ load_dotenv("/usr/local/airflow/.env", override=True)
 - **Python** – Data extraction logic
 - **Snowflake** – Cloud Data Warehouse (storage and transformation)
 - **OpenWeather API** – Weather data source
-- **dotenv** – Secrets management
 
 ***
 
