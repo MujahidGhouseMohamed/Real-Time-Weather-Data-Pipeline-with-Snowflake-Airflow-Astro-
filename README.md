@@ -3,6 +3,7 @@
 ## **Overview**
 
 This project is an **Apache Airflow–orchestrated ETL pipeline** that automates the **daily extraction, loading, and transformation** of weather data from the OpenWeather API into a Snowflake Data Warehouse, using the **Medallion Architecture** pattern:
+Youtube Video Demonstration: https://youtu.be/1Y8S4OSRyM0?feature=shared
 
 - **RAW (Bronze)** – Raw, ingested CSV data from the API.
 - **STAGE (Silver)** – Cleaned, validated and standardized data.
